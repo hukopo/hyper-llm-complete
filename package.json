@@ -7,5 +7,5 @@
   "keywords": ["hyper", "hyper-plugin", "zsh", "autocomplete", "llm", "mlx"],
   "license": "MIT",
   "repository": "github:hukopo/hyper-llm-complete",
-  "scripts": { "test": "zsh tests/strategy.zsh" }
+  "scripts": { "test": "zsh tests/strategy.zsh && sh tests/guard.sh" }
 }

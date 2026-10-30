@@ -54,17 +54,14 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // Не ждём выхода: waitUntilExit внутри terminate: может зависнуть, а сторож и так добьёт сервер за ~1 с.
     func applicationWillTerminate(_ n: Notification) { stop() }
 
-    // Запуск через sh-сторожа: он гасит дочерний процесс, если HyperLLM умер даже по kill -9.
+    // Запуск через сторожа (guard.sh): он гасит дочерний процесс, если HyperLLM умер даже по kill -9.
     func spawn(_ args: [String], env: [String: String], onExit: @escaping (Int32) -> Void) {
-        let guardScript = """
-        "$@" & c=$!
-        trap 'kill $c 2>/dev/null' TERM INT
-        while kill -0 \(ProcessInfo.processInfo.processIdentifier) 2>/dev/null && kill -0 $c 2>/dev/null; do sleep 1; done
-        kill $c 2>/dev/null; wait $c
-        """
+        guard let guardSh = Bundle.main.path(forResource: "guard", ofType: "sh") else {
+            state = .failed("Нет guard.sh в бандле — переустановите"); return
+        }
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/bin/sh")
-        p.arguments = ["-c", guardScript, "sh"] + args
+        p.arguments = [guardSh, "\(ProcessInfo.processInfo.processIdentifier)"] + args
         p.environment = ProcessInfo.processInfo.environment.merging(env) { $1 }
         if !FileManager.default.fileExists(atPath: logURL.path) { FileManager.default.createFile(atPath: logURL.path, contents: nil) }
         let log = try? FileHandle(forWritingTo: logURL)

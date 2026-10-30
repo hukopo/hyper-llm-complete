@@ -12,8 +12,9 @@ command -v jq >/dev/null || { echo "Нужен jq: brew install jq"; exit 1; }
 osascript -e 'quit app id "com.hukopo.hyperllm"' 2>/dev/null || true
 while pgrep -qf 'HyperLLM.app/Contents/MacOS/HyperLLM'; do sleep 0.2; done  # иначе open попадёт в закрывающийся экземпляр
 rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp app/Info.plist "$APP/Contents/"
+cp app/guard.sh "$APP/Contents/Resources/"
 swiftc -O -target "$(uname -m)-apple-macos13" app/HyperLLM.swift -o "$APP/Contents/MacOS/HyperLLM"
 codesign -s - --force "$APP"
 
