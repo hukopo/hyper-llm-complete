@@ -1,0 +1,11 @@
+{
+  "name": "hyper-llm-complete",
+  "version": "1.0.0",
+  "description": "Hyper: автокомплит команд zsh локальной LLM (MLX) + индикатор",
+  "main": "index.js",
+  "files": ["index.js", "zsh/"],
+  "keywords": ["hyper", "hyper-plugin", "zsh", "autocomplete", "llm", "mlx"],
+  "license": "MIT",
+  "repository": "github:hukopo/hyper-llm-complete",
+  "scripts": { "test": "zsh tests/strategy.zsh" }
+}
