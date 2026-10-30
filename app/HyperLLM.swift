@@ -67,7 +67,7 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate {
         p.environment = ProcessInfo.processInfo.environment.merging(env) { $1 }
         if !FileManager.default.fileExists(atPath: logURL.path) { FileManager.default.createFile(atPath: logURL.path, contents: nil) }
         let log = try? FileHandle(forWritingTo: logURL)
-        log?.seekToEndOfFile()
+        if let log, log.seekToEndOfFile() > 5_000_000 { log.truncateFile(atOffset: 0) }  // сервер пишет на каждый запрос
         p.standardOutput = log ?? FileHandle.nullDevice
         p.standardError = log ?? FileHandle.nullDevice
         p.terminationHandler = { p in
