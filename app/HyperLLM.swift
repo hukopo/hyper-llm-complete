@@ -51,7 +51,8 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate {
         start()
     }
 
-    func applicationWillTerminate(_ n: Notification) { stop(); proc?.waitUntilExit() }
+    // Не ждём выхода: waitUntilExit внутри terminate: может зависнуть, а сторож и так добьёт сервер за ~1 с.
+    func applicationWillTerminate(_ n: Notification) { stop() }
 
     // Запуск через sh-сторожа: он гасит дочерний процесс, если HyperLLM умер даже по kill -9.
     func spawn(_ args: [String], env: [String: String], onExit: @escaping (Int32) -> Void) {

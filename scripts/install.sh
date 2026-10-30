@@ -10,6 +10,7 @@ command -v jq >/dev/null || { echo "Нужен jq: brew install jq"; exit 1; }
 [ -x "$HOME/.local/bin/mlx_lm.server" ] || uv tool install --python 3.12 mlx-lm
 
 osascript -e 'quit app id "com.hukopo.hyperllm"' 2>/dev/null || true
+while pgrep -qf 'HyperLLM.app/Contents/MacOS/HyperLLM'; do sleep 0.2; done  # иначе open попадёт в закрывающийся экземпляр
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 cp app/Info.plist "$APP/Contents/"
